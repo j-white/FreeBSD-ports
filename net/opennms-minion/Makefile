@@ -5,10 +5,13 @@ PORTVERSION=	${OPENNMS_MAJOR_VERSION}.${OPENNMS_MINOR_VERSION}.${OPENNMS_INC_VER
 PORTREVISION=	0
 CATEGORIES=	net java
 
-MASTER_SITES=	http://yum.opennms.org/bleeding/common/opennms/:source1
+MASTER_SITES=	http://yum.opennms.org/bleeding/common/opennms/:source1 \
+                http://central.maven.org/maven2/:source2
 DISTFILES+=	opennms-minion-container-${OPENNMS_PACKAGE_VERSION}.noarch.rpm:source1 \
 		opennms-minion-features-core-${OPENNMS_PACKAGE_VERSION}.noarch.rpm:source1 \
-		opennms-minion-features-default-${OPENNMS_PACKAGE_VERSION}.noarch.rpm:source1
+		opennms-minion-features-default-${OPENNMS_PACKAGE_VERSION}.noarch.rpm:source1 \
+                net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar:source2 \
+                net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar:source2
 EXTRACT_ONLY=	opennms-minion-container-${OPENNMS_PACKAGE_VERSION}.noarch.rpm \
                 opennms-minion-features-core-${OPENNMS_PACKAGE_VERSION}.noarch.rpm \
                 opennms-minion-features-default-${OPENNMS_PACKAGE_VERSION}.noarch.rpm
@@ -21,12 +24,12 @@ LICENSE=	AGPLv3
 EXTRACT_DEPENDS=	rpm2cpio.pl:${PORTSDIR}/archivers/rpm2cpio
 RUN_DEPENDS=	javavm:${PORTSDIR}/java/javavmwrapper
 
-OPENNMS_MAJOR_VERSION=  22
+OPENNMS_MAJOR_VERSION=  23
 OPENNMS_MINOR_VERSION=  0
 OPENNMS_INC_VERSION=    0
-OPENNMS_DATE_VERSION=	2018.04.18
+OPENNMS_DATE_VERSION=	2018.08.25
 
-OPENNMS_PACKAGE_VERSION=	22.0.0-0.20180416.onms.develop.1335
+OPENNMS_PACKAGE_VERSION=	23.0.0-0.20180825.onms.develop.1465
 
 USES=           perl5
 USE_JAVA=       yes
@@ -51,6 +54,12 @@ do-install:
 		${MKDIR} ${STAGEDIR}${INSTPREFIX}
 		(cd ${WRKDIR}/opt/minion && ${COPYTREE_SHARE} . ${STAGEDIR}${INSTPREFIX})
 		(cd ${WRKDIR}/opt/minion/bin && ${COPYTREE_BIN} . ${STAGEDIR}${INSTPREFIX}/bin)
+		(cp ${DISTDIR}/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/lib/boot/jna-4.4.0.jar)
+		(cp ${DISTDIR}/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/repositories/default/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar)
+		(cp ${DISTDIR}/net/java/dev/jna/jna/4.5.1/jna-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/system/net/java/dev/jna/jna/4.4.0/jna-4.4.0.jar)
+		(cp ${DISTDIR}/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/lib/boot/jna-platform-4.4.0.jar)
+		(cp ${DISTDIR}/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/repositories/default/net/java/dev/jna/jna-platform/4.4.0/jna-platform-4.4.0.jar)
+		(cp ${DISTDIR}/net/java/dev/jna/jna-platform/4.5.1/jna-platform-4.5.1.jar ${STAGEDIR}${INSTPREFIX}/system/net/java/dev/jna/jna-platform/4.4.0/jna-platform-4.4.0.jar)
 		@(cd ${STAGEDIR}${PREFIX}; ${FIND} -s minion -not -type d) >> ${TMPPLIST}
 
 .include <bsd.port.mk>
